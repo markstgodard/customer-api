@@ -1,6 +1,13 @@
 package customers
 
-import "context"
+import (
+	"context"
+	"errors"
+)
+
+var (
+	ErrInvalid = errors.New("invalid request")
+)
 
 type Service interface {
 	Create(ctx context.Context, c Customer) (Customer, error)
@@ -17,8 +24,8 @@ func NewService(repo CustomerRepository) Service {
 
 func (s *customerService) Create(_ context.Context, c Customer) (Customer, error) {
 	// validate customer
-	if ok, err := c.Valid(); !ok {
-		return c, err
+	if ok, _ := c.Valid(); !ok {
+		return c, ErrInvalid
 	}
 
 	// create customer
