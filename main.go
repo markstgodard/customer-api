@@ -52,6 +52,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/api/v1/", customers.MakeHTTPHandler(s, httpLogger))
+	http.Handle("/", mux)
 
 	errs := make(chan error)
 	go func() {
