@@ -16,7 +16,7 @@ func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
 		httptransport.ServerErrorEncoder(encodeError),
 	}
 
-	// get customers
+	// list customers
 	getCustomersHandler := httptransport.NewServer(
 		makeGetCustomersEndpoint(s),
 		decodeGetCustomersRequest,
