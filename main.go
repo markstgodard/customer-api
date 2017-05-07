@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/go-kit/kit/log"
-	"github.com/markstgodard/orders-api/customers"
+	"github.com/markstgodard/customer-api/customers"
 )
 
 const (
