@@ -10,8 +10,8 @@ var (
 )
 
 type Service interface {
-	Create(ctx context.Context, c Customer) (Customer, error)
-	List(ctx context.Context) ([]Customer, error)
+	CreateCustomer(ctx context.Context, c Customer) (Customer, error)
+	ListCustomers(ctx context.Context) ([]Customer, error)
 }
 
 type customerService struct {
@@ -22,7 +22,7 @@ func NewService(repo CustomerRepository) Service {
 	return &customerService{repo}
 }
 
-func (s *customerService) Create(_ context.Context, c Customer) (Customer, error) {
+func (s *customerService) CreateCustomer(_ context.Context, c Customer) (Customer, error) {
 	// validate customer
 	if ok, _ := c.Valid(); !ok {
 		return c, ErrInvalid
@@ -37,6 +37,6 @@ func (s *customerService) Create(_ context.Context, c Customer) (Customer, error
 	return c, nil
 }
 
-func (s *customerService) List(_ context.Context) ([]Customer, error) {
+func (s *customerService) ListCustomers(_ context.Context) ([]Customer, error) {
 	return s.repo.List()
 }

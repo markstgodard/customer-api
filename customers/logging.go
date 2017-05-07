@@ -17,16 +17,16 @@ func NewLoggingMiddlware(logger log.Logger) Middleware {
 	}
 }
 
-func (l loggingMiddleware) Create(ctx context.Context, c Customer) (v Customer, err error) {
+func (l loggingMiddleware) CreateCustomer(ctx context.Context, c Customer) (v Customer, err error) {
 	defer func() {
-		l.logger.Log("method", "Create", "email", c.Email, "err", err)
+		l.logger.Log("method", "CreateCustomer", "email", c.Email, "err", err)
 	}()
-	return l.next.Create(ctx, c)
+	return l.next.CreateCustomer(ctx, c)
 }
 
-func (l loggingMiddleware) List(ctx context.Context) (v []Customer, err error) {
+func (l loggingMiddleware) ListCustomers(ctx context.Context) (v []Customer, err error) {
 	defer func() {
-		l.logger.Log("method", "List", "err", err)
+		l.logger.Log("method", "ListCustomers", "err", err)
 	}()
-	return l.next.List(ctx)
+	return l.next.ListCustomers(ctx)
 }

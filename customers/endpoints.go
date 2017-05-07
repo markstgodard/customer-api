@@ -20,7 +20,7 @@ type getCustomersResponse struct {
 
 func makeGetCustomersEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		customerz, err := s.List(ctx)
+		customerz, err := s.ListCustomers(ctx)
 		if err != nil {
 			return errResponse{err}, err
 		}
@@ -35,7 +35,7 @@ type createCustomerRequest struct {
 func makeCreateCustomerEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(createCustomerRequest)
-		c, err := s.Create(ctx, req.Customer)
+		c, err := s.CreateCustomer(ctx, req.Customer)
 		if err != nil {
 			return errResponse{err}, err
 		}
