@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/ratelimit"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
+	jujuratelimit "github.com/juju/ratelimit"
 )
 
 func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
@@ -18,7 +21,7 @@ func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
 
 	// list customers
 	getCustomersHandler := httptransport.NewServer(
-		makeGetCustomersEndpoint(s),
+		rateLimit(100, makeGetCustomersEndpoint(s)),
 		decodeGetCustomersRequest,
 		encodeResponse,
 		opts...,
@@ -26,7 +29,7 @@ func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
 
 	// create customer
 	createCustomerHandler := httptransport.NewServer(
-		makeCreateCustomerEndpoint(s),
+		rateLimit(100, makeCreateCustomerEndpoint(s)),
 		decodeCreateCustomerRequest,
 		encodeResponse,
 		opts...,
@@ -38,6 +41,10 @@ func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
 	r.Handle("/api/v1/customers", createCustomerHandler).Methods("POST")
 
 	return r
+}
+
+func rateLimit(qps int, e endpoint.Endpoint) endpoint.Endpoint {
+	return ratelimit.NewTokenBucketLimiter(jujuratelimit.NewBucketWithRate(float64(qps), int64(qps)))(e)
 }
 
 func decodeGetCustomersRequest(ctx context.Context, r *http.Request) (request interface{}, err error) {

@@ -75,8 +75,8 @@ func main() {
 	httpLogger := log.With(logger, "component", "http")
 
 	mux.Handle("/api/v1/", customers.MakeHTTPHandler(s, httpLogger))
-	http.Handle("/", mux)
 
+	http.Handle("/", mux)
 	http.Handle("/metrics", promhttp.Handler())
 
 	errs := make(chan error)
