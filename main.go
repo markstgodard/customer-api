@@ -35,7 +35,6 @@ func init() {
 }
 
 func main() {
-
 	// logger
 	var logger log.Logger
 	logger = log.NewLogfmtLogger(os.Stderr)
@@ -45,11 +44,12 @@ func main() {
 	// create service
 	repo := &customers.InMemoryCustomerRepo{}
 	s := customers.NewService(repo)
+
 	s = customers.NewLoggingMiddlware(logger)(s)
 
-	httpLogger := log.With(logger, "component", "http")
-
 	mux := http.NewServeMux()
+
+	httpLogger := log.With(logger, "component", "http")
 
 	mux.Handle("/api/v1/", customers.MakeHTTPHandler(s, httpLogger))
 	http.Handle("/", mux)
