@@ -11,6 +11,11 @@ import (
 
 var qps = 100
 
+// rate limiting middleware
+func ratelimitingMiddleware(qps int, e endpoint.Endpoint) endpoint.Endpoint {
+	return ratelimit.NewTokenBucketLimiter(jujuratelimit.NewBucketWithRate(float64(qps), int64(qps)))(e)
+}
+
 // "make" methods for each endpoint
 func makeGetCustomersEndpoint(s Service) endpoint.Endpoint {
 	e := getCustomersEndpoint(s)
@@ -24,11 +29,6 @@ func makeCreateCustomerEndpoint(s Service) endpoint.Endpoint {
 
 	e = ratelimitingMiddleware(qps, e)
 	return e
-}
-
-// rate limiting middleware
-func ratelimitingMiddleware(qps int, e endpoint.Endpoint) endpoint.Endpoint {
-	return ratelimit.NewTokenBucketLimiter(jujuratelimit.NewBucketWithRate(float64(qps), int64(qps)))(e)
 }
 
 // Get Customers
